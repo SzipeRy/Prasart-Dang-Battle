@@ -1,0 +1,487 @@
+@startuml
+class base.Base {
+- int hp
+- int maxHp
+- List<Turret> TURRETS
+- int turretCapacity
+- {static} int capacityUpgrades
+- {static} Random random
++ int addTurret(Turret)
++ boolean removeTurret(Turret)
++ List<Turret> getTurrets()
++ void upgradeTurretCapacity()
++ {static} void resetUpgrades()
++ int takeDamage(int)
++ boolean isAlive()
++ int getHp()
++ int getTurretCapacity()
++ void setHp(int)
++ void setTurretCapacity(int)
++ int getMaxHp()
++ void setMaxHp(int)
++ {static} int getCapacityUpgrades()
+}
+
+
+class systems.CurrencySystem {
+- int balance
++ void earn(int)
++ boolean spend(int)
++ boolean canAfford(int)
++ int getBalance()
++ void setBalance(int)
+}
+
+
+class units.AntiArmoredUnit {
++ int calculateDamage(Attackable)
+}
+
+abstract class units.Unit {
+- int hp
+- int maxHp
+- int attack
+- int speed
+- int cost
+- int range
+- long trainingTime
+- double coordinate
+- {static} boolean upgradedAttack
+- {static} boolean upgradedHp
+# {static} double COUNTER_MULTIPLIER
+# {static} double DAMAGE_REDUCTION
+- {static} Random RANDOM
+- long lastAttackTime
+- long attackCooldown
++ {abstract}int calculateDamage(Attackable)
++ int attack(Attackable)
++ boolean canAttack(long)
++ int takeDamage(int)
++ boolean isAlive()
++ {static} void resetUpgrades()
++ int getHp()
++ int getMaxHp()
++ int getAttack()
++ int getSpeed()
++ void setSpeed(int)
++ int getCost()
++ void setCost(int)
++ int getRange()
++ void setRange(int)
++ long getTrainingTime()
++ double getCoordinate()
++ void setCoordinate(double)
++ void setHp(int)
++ void setMaxHp(int)
++ void setAttack(int)
++ {static} boolean isUpgradedAttack()
++ {static} void setUpgradedAttack(boolean)
++ {static} boolean isUpgradedHp()
++ {static} void setUpgradedHp(boolean)
+}
+
+
+class systems.UpgradeSystem {
+- CurrencySystem currency
++ boolean upgradeUnitAttack(int)
++ boolean upgradeUnitHp(int)
++ boolean upgradeTurretAttack(int)
++ boolean upgradeTurretRange(int)
++ boolean upgradeBaseCapacity(Base,int)
+}
+
+
+class This_Package_Is_Cursed_Do_Not_Ever_Try_To_Change_Name_Or_It_Will_Explode.GameManager {
++ {static} double MAP_WIDTH
+- {static} double PLAYER_SPAWN_X
+- {static} double ENEMY_SPAWN_X
++ {static} double PLAYER_BASE_X
++ {static} double ENEMY_BASE_X
+- {static} double BASE_HITBOX_DIST
+- {static} double COLLISION_RADIUS
+- CurrencySystem currencySystem
+- UpgradeSystem upgradeSystem
+- Base playerBase
+- Base enemyBase
+- List<Unit> playerUnits
+- List<Unit> enemyUnits
+- List<Turret> playerTurrets
+- List<Turret> enemyTurrets
+- List<Projectile> projectiles
+- List<SpecialAbility> abilities
+- NukeAbility nukeAbility
+- Queue<Unit> trainingQueue
+- {static} int MAX_QUEUE_SIZE
+- Unit currentTrainingUnit
+- long trainingStartTime
+- long lastCurrencyRegenTime
+- {static} long CURRENCY_REGEN_INTERVAL
+- Random random
+- long nextEnemySpawnTime
+- {static} long DELAY_AFTER_MELEE
+- {static} long DELAY_AFTER_RANGED
+- {static} long DELAY_AFTER_ANTI_ARMOR
+- {static} long DELAY_AFTER_ARMORED
+- List<DamageEvent> recentDamageEvents
++ GameState tick()
+- void updateProjectiles()
+- void updateTurrets(List<Turret>,List<Unit>,long)
+- void updateUnits(List<Unit>,List<Unit>,Base,int,long)
+- boolean isCounter(Unit,Attackable)
+- void updateEnemyAI(long)
++ boolean queueUnit(Unit)
+- void updateTraining(long)
++ void spawnPlayerUnit(Unit)
++ void spawnEnemyUnit(Unit)
++ int placePlayerTurret(Turret)
++ void sellTurret(int)
++ boolean useAbility(SpecialAbility,List<Unit>)
++ void upgradeUnitAttack(int)
++ void upgradeUnitHp(int)
++ void upgradeTurretAttack(int)
++ void upgradeTurretRange(int)
++ void upgradeBaseCapacity(int)
++ CurrencySystem getCurrencySystem()
++ Base getPlayerBase()
++ Base getEnemyBase()
++ List<Unit> getPlayerUnits()
++ List<Unit> getEnemyUnits()
++ Unit getCurrentTrainingUnit()
++ int getQueueSize()
++ List<DamageEvent> getRecentDamageEvents()
++ NukeAbility getNukeAbility()
++ List<Projectile> getProjectiles()
+}
+
+
+enum This_Package_Is_Cursed_Do_Not_Ever_Try_To_Change_Name_Or_It_Will_Explode.GameState {
++  PLAYER_WIN
++  ENEMY_WIN
++  ONGOING
+}
+
+class This_Package_Is_Cursed_Do_Not_Ever_Try_To_Change_Name_Or_It_Will_Explode.GameManager$DamageEvent {
+- double x
+- double y
+- int amount
+- boolean isCritical
+- String damageType
+- boolean isBase
++ boolean isCritical()
++ String damageType()
++ int amount()
++ double y()
++ boolean isBase()
++ double x()
+}
+
+
+class controllers.GameController {
+- GameManager gameManager
+- int startCurrency
+- int baseHp
++ void resetGame()
++ boolean playerQueueUnit(Unit)
++ int playerPlaceTurret(Turret)
++ void playerSellTurret(int)
++ boolean playerUseAbility(SpecialAbility,List<Unit>)
++ void playerUpgradeUnitAttack(int)
++ void playerUpgradeUnitHp(int)
++ void playerUpgradeTurretAttack(int)
++ void playerUpgradeTurretRange(int)
++ void playerUpgradeBaseCapacity(int)
++ GameState nextTurn()
++ GameManager getGameManager()
+}
+
+
+class units.ArmoredUnit {
++ int calculateDamage(Attackable)
++ int takeDamage(int)
+}
+
+class This_Package_Is_Cursed_Do_Not_Ever_Try_To_Change_Name_Or_It_Will_Explode.SceneManager {
+- Stage primaryStage
+- GameController gameController
+- SoundManager soundManager
+- Scene menuScene
+- Scene battlefieldScene
++ void showMenu()
++ void showBattlefield()
++ void showTutorial()
++ void returnToMenu()
+}
+
+
+class ui.EndGameView {
+- StackPane root
++ StackPane getRoot()
+}
+
+
+interface interfaces.Attackable {
+~ int takeDamage(int)
+~ boolean isAlive()
+}
+
+class turrets.StandardTurret {
++ int calculateDamage(Attackable)
+}
+
+class ui.HUD {
+- BorderPane root
+- GameController gameController
+- BattlefieldView battlefieldView
+- SoundManager soundManager
+- Label currencyLabel
+- Label queueLabel
+- Button nukeButton
+- VBox activeMenu
+- {static} String BUTTON_STYLE
+- {static} String BUTTON_HOVER_STYLE
+- {static} String BUTTON_DISABLED_STYLE
+- {static} String SUB_MENU_STYLE
+- Button createStyledButton(String)
+- void toggleMenu(VBox)
+- void showMenu(VBox)
+- VBox createTrainUnitsMenu()
+- Button createUnitBtn(String,String,Unit)
+- VBox createTurretsMenu()
+- void placeTurretVisuals(Turret,String)
+- VBox createSellTurretsMenu()
+- VBox createUpgradesMenu()
+- void disableButton(Button)
+- VBox createAbilitiesMenu()
++ BorderPane getRoot()
++ void updateCurrency()
+}
+
+
+class ui.MenuView {
+- StackPane root
+- {static} String BUTTON_STYLE
+- {static} String BUTTON_HOVER_STYLE
+- void addBackground()
+- Button createStyledButton(String)
+- HBox createRuleLine(String,String)
+- HBox createCounterLine(String,String,String,String)
++ StackPane getRoot()
+}
+
+
+class ui.renderer.UnitRenderer {
+- Unit unit
+- ImageView imageView
+- ProgressBar hpBar
+- double lastX
+- double walkCycle
+- {static} double BOB_AMPLITUDE
+- {static} double BOB_SPEED
+- double groundY
+- void alignToGround(double,double)
++ void addToPane(Pane)
++ void removeFromPane(Pane)
++ void update(double)
++ Unit getUnit()
+}
+
+
+class This_Package_Is_Cursed_Do_Not_Ever_Try_To_Change_Name_Or_It_Will_Explode.SoundManager {
+- MediaPlayer bgmPlayer
+- MediaPlayer menuBgmPlayer
+- AudioClip unitTakeDamageSfx
+- AudioClip baseTakeDamageSfx
+- AudioClip shootSfx
+- AudioClip explosionSfx
+- AudioClip nukeSfx
+- void bgmMediaInit(String)
+- void menuBgmMediaInit(String)
+- AudioClip loadClip(String,double)
++ void playBattleBGM()
++ void stopBattleBGM()
++ void playMenuBGM()
++ void stopMenuBGM()
++ void playUnitTakeDamage()
++ void playBaseTakeDamage()
++ void playShootSound()
++ void playBaseExplosion()
++ void playNukeSound()
+}
+
+
+abstract class turrets.Turret {
+- int attack
+- int range
+- int cost
+- long cooldown
+- long lastAttackTime
+- {static} boolean upgradedAttack
+- {static} boolean upgradedRange
+# {static} double DAMAGE_MULTIPLIER
+- {static} Random RANDOM
++ {abstract}int calculateDamage(Attackable)
+# int applyVariance(int)
++ boolean canFire(long)
++ void resetCooldown(long)
++ {static} void resetUpgrades()
++ int getAttack()
++ int getRange()
++ int getCost()
++ long getCooldown()
++ long getLastAttackTime()
++ void setAttack(int)
++ void setRange(int)
++ void setCost(int)
++ void setCooldown(long)
++ void setLastAttackTime(long)
++ {static} boolean isUpgradedAttack()
++ {static} void setUpgradedAttack(boolean)
++ {static} boolean isUpgradedRange()
++ {static} void setUpgradedRange(boolean)
+}
+
+
+class abilities.NukeAbility {
+- int damage
++ void activate(Attackable)
++ void activate(List<? extends Attackable>)
++ int getDamage()
++ void setDamage(int)
+}
+
+
+class ui.renderer.DamagePopupRenderer {
++ {static} void showDamage(Pane,double,double,int,boolean)
+}
+
+class ui.renderer.ProjectileRenderer {
+- Projectile projectile
+- Circle shape
++ void addToPane(Pane)
++ void removeFromPane(Pane)
++ void update()
++ Projectile getProjectile()
+}
+
+
+class ui.BattlefieldView {
+- StackPane root
+- GameController gameController
+- SoundManager soundManager
+- ScrollPane scrollPane
+- Pane battlefieldPane
+- Pane turretLayer
+- HUD hud
+- StackPane gameContentLayer
+- List<UnitRenderer> unitRenderers
+- List<TurretRenderer> turretRenderers
+- List<ProjectileRenderer> projectileRenderers
+- ProgressBar playerHpBar
+- ProgressBar enemyHpBar
+- Label playerHpLabel
+- Label enemyHpLabel
+- AnimationTimer gameLoop
+- void addBaseVisuals()
++ void showEndGameOverlay(boolean,SceneManager)
++ void addTurretRenderer(TurretRenderer)
+- void startGameLoop(SceneManager)
+- void syncUnits(List<Unit>,boolean)
+- String getUnitImagePath(Unit,boolean)
++ StackPane getRoot()
++ void addUnitRenderer(UnitRenderer)
++ void addAbilityRenderer(AbilityRenderer)
+}
+
+
+class objects.Projectile {
+- double x
+- double y
+- double speed
+- int damage
+- Attackable target
+- boolean hit
+- String imagePath
+- boolean isCritical
++ void tick()
++ double getX()
++ double getY()
++ int getDamage()
++ Attackable getTarget()
++ boolean hasHit()
++ void setHit(boolean)
++ String getImagePath()
++ boolean isCritical()
+}
+
+
+class ui.renderer.TurretRenderer {
+- Turret TURRET
+- ImageView IMAGE_VIEW
+- double x
+- double y
++ void addToPane(Pane)
++ void removeFromPane(Pane)
++ Turret getTurret()
+}
+
+
+class ui.renderer.AbilityRenderer {
+- SpecialAbility ability
++ void render(Pane)
+- void renderNuke(Pane)
++ SpecialAbility getAbility()
+}
+
+
+class main.Main {
+- SceneManager sceneManager
+- GameController gameController
++ void start(Stage)
++ {static} void main(String[])
+}
+
+
+abstract class abilities.SpecialAbility {
+- int cost
+- int cooldown
+- int currentCooldown
++ {abstract}void activate(Attackable)
++ boolean isReady()
+# void triggerCooldown()
++ void tickCooldown()
++ int getCost()
++ void setCost(int)
++ int getCooldown()
++ void setCooldown(int)
++ int getCurrentCooldown()
++ void setCurrentCooldown(int)
+}
+
+
+class units.RangedUnit {
++ int calculateDamage(Attackable)
+}
+
+class turrets.LongRangeTurret {
++ int calculateDamage(Attackable)
++ int calculateDamageWithDistance(int)
+}
+
+class units.MeleeUnit {
++ int calculateDamage(Attackable)
+}
+
+
+
+interfaces.Attackable <|.. base.Base
+units.Unit <|-- units.AntiArmoredUnit
+interfaces.Attackable <|.. units.Unit
+This_Package_Is_Cursed_Do_Not_Ever_Try_To_Change_Name_Or_It_Will_Explode.GameManager +.. This_Package_Is_Cursed_Do_Not_Ever_Try_To_Change_Name_Or_It_Will_Explode.GameManager$DamageEvent
+units.Unit <|-- units.ArmoredUnit
+turrets.Turret <|-- turrets.StandardTurret
+abilities.SpecialAbility <|-- abilities.NukeAbility
+javafx.application.Application <|-- main.Main
+units.Unit <|-- units.RangedUnit
+turrets.Turret <|-- turrets.LongRangeTurret
+units.Unit <|-- units.MeleeUnit
+@enduml
